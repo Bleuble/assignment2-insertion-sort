@@ -14,7 +14,27 @@ public class SelectionSort {
             return;
         }
 
+        // Early check for already sorted array
+        if (isAlreadySorted(array)) {
+            return;
+        }
+
         selectionSortWithOptimizations(array);
+    }
+
+    public PerformanceTracker sortWithMetrics(int[] array) {
+        PerformanceTracker tracker = new PerformanceTracker();
+        tracker.startTimer();
+
+        resetMetrics();
+        sort(array);
+
+        tracker.stopTimer();
+        tracker.setMetric("comparisons", comparisons);
+        tracker.setMetric("swaps", swaps);
+        tracker.setMetric("assignments", assignments);
+
+        return tracker;
     }
 
     private void selectionSortWithOptimizations(int[] array) {
@@ -44,19 +64,14 @@ public class SelectionSort {
         assignments += 3;
     }
 
-    public PerformanceTracker sortWithMetrics(int[] array) {
-        PerformanceTracker tracker = new PerformanceTracker();
-        tracker.startTimer();
-
-        resetMetrics();
-        sort(array);
-
-        tracker.stopTimer();
-        tracker.setMetric("comparisons", comparisons);
-        tracker.setMetric("swaps", swaps);
-        tracker.setMetric("assignments", assignments);
-
-        return tracker;
+    private boolean isAlreadySorted(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            comparisons++;
+            if (array[i] < array[i - 1]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void resetMetrics() {
