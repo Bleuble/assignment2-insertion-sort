@@ -7,6 +7,7 @@ public class PerformanceTracker {
     private final Map<String, Long> metrics;
     private long startTime;
     private long endTime;
+    private int arraySize;
 
     public PerformanceTracker() {
         this.metrics = new HashMap<>();
@@ -26,6 +27,10 @@ public class PerformanceTracker {
         metrics.put(name, value);
     }
 
+    public void setArraySize(int size) {
+        this.arraySize = size;
+    }
+
     public long getMetric(String name) {
         return metrics.getOrDefault(name, 0L);
     }
@@ -38,6 +43,7 @@ public class PerformanceTracker {
         metrics.clear();
         startTime = 0;
         endTime = 0;
+        arraySize = 0;
     }
 
     public void printMetrics() {
@@ -52,12 +58,16 @@ public class PerformanceTracker {
     }
 
     public String toCSV() {
-        return String.format("%.3f,%s",
+        return String.format("%d,%.6f,%d,%d,%d",
+                arraySize,
                 getExecutionTimeMillis(),
-                String.join(",", metrics.entrySet().stream()
-                        .filter(entry -> !entry.getKey().equals("executionTimeNanos"))
-                        .map(entry -> entry.getValue().toString())
-                        .toArray(String[]::new))
+                getMetric("comparisons"),
+                getMetric("swaps"),
+                getMetric("assignments")
         );
+    }
+
+    public static String getCSVHeader() {
+        return "Size,Time(ms),Comparisons,Swaps,Assignments";
     }
 }
