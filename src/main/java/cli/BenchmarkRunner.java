@@ -1,50 +1,59 @@
 package cli;
 
 import algorithms.InsertionSort;
+import algorithms.SelectionSort;
 import metrics.PerformanceTracker;
 import java.util.Random;
 
 public class BenchmarkRunner {
 
     public static void main(String[] args) {
-        System.out.println("🚀 Insertion Sort Benchmark");
-        System.out.println("============================");
+        System.out.println("🚀 Algorithm Comparison Benchmark");
+        System.out.println("=================================");
 
-        // Тестируем на разных размерах массивов
         int[] sizes = {100, 1000, 5000, 10000};
 
         for (int size : sizes) {
             System.out.printf("\n📊 Testing with array size: %,d%n", size);
-            benchmarkRandomArray(size);
-            benchmarkSortedArray(size);
-            benchmarkReverseSortedArray(size);
+            System.out.println("-------------------------------");
+            benchmarkAlgorithms(size);
         }
     }
 
-    private static void benchmarkRandomArray(int size) {
-        int[] array = generateRandomArray(size);
-        runBenchmark("Random", array);
+    private static void benchmarkAlgorithms(int size) {
+        int[] randomData = generateRandomArray(size);
+        int[] sortedData = generateSortedArray(size);
+        int[] reverseData = generateReverseSortedArray(size);
+
+        System.out.println("INSERTION SORT:");
+        runBenchmark("Insertion", "Random", randomData.clone());
+        runBenchmark("Insertion", "Sorted", sortedData.clone());
+        runBenchmark("Insertion", "Reverse", reverseData.clone());
+
+        System.out.println();
+
+        System.out.println("SELECTION SORT:");
+        runBenchmark("Selection", "Random", randomData.clone());
+        runBenchmark("Selection", "Sorted", sortedData.clone());
+        runBenchmark("Selection", "Reverse", reverseData.clone());
     }
 
-    private static void benchmarkSortedArray(int size) {
-        int[] array = generateSortedArray(size);
-        runBenchmark("Sorted", array);
-    }
+    private static void runBenchmark(String algorithm, String type, int[] array) {
+        PerformanceTracker tracker;
 
-    private static void benchmarkReverseSortedArray(int size) {
-        int[] array = generateReverseSortedArray(size);
-        runBenchmark("Reverse Sorted", array);
-    }
+        if (algorithm.equals("Insertion")) {
+            InsertionSort sorter = new InsertionSort();
+            tracker = sorter.sortWithMetrics(array);
+        } else {
+            SelectionSort sorter = new SelectionSort();
+            tracker = sorter.sortWithMetrics(array);
+        }
 
-    private static void runBenchmark(String type, int[] array) {
-        InsertionSort sorter = new InsertionSort();
-        PerformanceTracker tracker = sorter.sortWithMetrics(array);
-
-        System.out.printf("  %s: %.3f ms, Comparisons: %,d, Assignments: %,d%n",
+        System.out.printf("  %s: %.3f ms, Comparisons: %,d, Operations: %,d%n",
                 type,
                 tracker.getExecutionTimeMillis(),
                 tracker.getMetric("comparisons"),
-                tracker.getMetric("assignments")
+                algorithm.equals("Insertion") ? tracker.getMetric("assignments") : tracker.getMetric("swaps")
         );
     }
 
