@@ -1,7 +1,7 @@
 # Algorithm Analysis Report: Selection Sort
 
 **Course:** Algorithmic Analysis and Peer Code Review  
-**Student:** [Your Name]  
+**Student:** Birkhanym and Dana  
 **Partner's Algorithm:** Selection Sort  
 **Your Algorithm:** Insertion Sort  
 **Date:** October 2024
